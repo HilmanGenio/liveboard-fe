@@ -6,7 +6,7 @@ interface CreatePostProps {
   onPostCreated: (post: Post) => void;
 }
 
-const CreatePost = ({ onPostCreated }: CreatePostProps) => {
+const CreatePost = ({ onPostCreated: _onPostCreated }: CreatePostProps) => {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

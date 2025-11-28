@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { Post } from '../types';
+import { Post, LikeUpdate } from '../types';
 import { postsAPI } from '../services/api';
 import { socketService } from '../services/socket';
 import CreatePost from '../components/CreatePost';
@@ -45,7 +45,7 @@ const Home = () => {
     });
 
     // Listen for like updates
-    socketService.onLikeUpdate((likeData) => {
+    socketService.onLikeUpdate((likeData: LikeUpdate) => {
       setPosts(prev => prev.map(post => {
         if (post.id === likeData.postId) {
           const updatedPost = { 
@@ -54,10 +54,10 @@ const Home = () => {
           };
           
           // Update likes array
-          if (likeData.isLiked) {
+          if (likeData.isLiked && likeData.userId) {
             const userAlreadyLiked = post.likes.some(like => like.user.id === likeData.userId);
-            if (!userAlreadyLiked) {
-              const likeUser = likeData.userId === user?.id 
+            if (!userAlreadyLiked && user) {
+              const likeUser = likeData.userId === user.id 
                 ? { id: user.id, name: user.name }
                 : { id: likeData.userId, name: 'User' };
               
@@ -67,7 +67,7 @@ const Home = () => {
                 createdAt: new Date().toISOString()
               }];
             }
-          } else {
+          } else if (likeData.userId) {
             updatedPost.likes = post.likes.filter(like => like.user.id !== likeData.userId);
           }
           

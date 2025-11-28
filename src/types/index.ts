@@ -38,3 +38,10 @@ export interface ApiResponse<T> {
   data: T;
   error?: string;
 }
+
+export interface LikeUpdate {
+  postId: number;
+  likeCount: number;
+  isLiked: boolean;
+  userId?: number;
+}
